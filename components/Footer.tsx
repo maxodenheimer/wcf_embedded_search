@@ -10,46 +10,39 @@ export const Footer: FC = () => {
         Created by
         <a
           className="hover:opacity-50 mx-1"
-          href="https://twitter.com/mckaywrigley"
+          href="https://twitter.com/Deadso" // Replace with your Twitter link
           target="_blank"
           rel="noreferrer"
         >
-          Mckay Wrigley
+          Max Odenheimer
         </a>
-        based on
+        inspired by
         <a
           className="hover:opacity-50 mx-1"
-          href="https://twitter.com/naval"
+          href="https://stratechery.com" // Replace with the URL to Ben Thompson's blog
           target="_blank"
           rel="noreferrer"
         >
-          Naval Ravikant's
+          Ben Thompson's
         </a>
-        Twitter thread
-        <a
-          className="hover:opacity-50 ml-1"
-          href="https://twitter.com/naval/status/1002103360646823936?lang=en"
-          target="_blank"
-          rel="noreferrer"
-        >
-          How To Get Rich
-        </a>
-        .
+        blog Stratechery.
       </div>
 
       <div className="flex space-x-4">
+        {/* Replace with your social media or remove if not applicable */}
         <a
           className="flex items-center hover:opacity-50"
-          href="https://twitter.com/mckaywrigley"
+          href="https://twitter.com/Deadso" // Replace with your Twitter link
           target="_blank"
           rel="noreferrer"
         >
           <IconBrandTwitter size={24} />
         </a>
 
+        {/* Replace with your GitHub link or remove if not applicable */}
         <a
           className="flex items-center hover:opacity-50"
-          href="https://github.com/mckaywrigley/naval-gpt"
+          href="https://github.com/maxodenheimer/thompson_gpt" // Replace with your GitHub link
           target="_blank"
           rel="noreferrer"
         >

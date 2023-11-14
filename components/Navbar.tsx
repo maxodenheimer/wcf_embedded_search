@@ -1,7 +1,7 @@
 import { IconExternalLink } from "@tabler/icons-react";
 import Image from "next/image";
 import { FC } from "react";
-import naval from "../public/naval.jpeg";
+import naval from "../public/stratechery.jpeg";
 
 export const Navbar: FC = () => {
   return (
@@ -15,7 +15,7 @@ export const Navbar: FC = () => {
         />
         <a
           className="ml-2 hover:opacity-50"
-          href="https://naval-gpt.vercel.app"
+          href="https://thompson-gpt.vercel.app"
         >
           Naval GPT
         </a>
@@ -23,7 +23,7 @@ export const Navbar: FC = () => {
       <div>
         <a
           className="flex items-center hover:opacity-50"
-          href="http://www.nav.al"
+          href="https://stratechery.com/"
           target="_blank"
           rel="noreferrer"
         >

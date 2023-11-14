@@ -38,3 +38,6 @@ next-env.d.ts
 # audio
 clips/
 podcast.mp3
+
+# DS Store
+.DS_Store
