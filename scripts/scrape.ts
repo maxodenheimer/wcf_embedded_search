@@ -5,84 +5,47 @@ import fs from "fs";
 import { encode } from "gpt-3-encoder";
 
 const scrapePost = async () => {
-  const html = await axios.get(`https://nav.al/rich`);
+  const html = await axios.get("https://stratechery.com");
   const $ = cheerio.load(html.data);
-  const content = $(".content");
-  const children = content.children();
+  const content = $(".post"); // Update this selector to match the article container on the webpage
 
   let sections: NavalSection[] = [];
 
-  children.each((i, el) => {
-    const tag = $(el).prop("tagName");
+  content.each((_, el) => {
+    // Assuming each '.post' is an article
+    const article = $(el);
+    const title = article.find(".entry-title").text();
+    const publishedDate = article.find(".entry-date.published").attr("datetime");
+    const updatedDate = article.find(".updated").attr("datetime");
+    const contentHtml = article.find(".entry-content").html();
+    const contentText = article.find(".entry-content").text();
 
-    let sectionTitle = $(el).text();
     let subsections: NavalSubsection[] = [];
+    article.find("h3").each((_, subEl) => {
+      const subtitle = $(subEl).text();
+      let subsectionContentHtml = "";
+      let subsectionContentText = "";
 
-    if (tag === "H2") {
-      let subsectionIndex = -1;
-      let subsectionTitle = "";
-      let subsectionHtml = "";
-      let subsectionText = "";
-
-      $(el)
-        .nextUntil("H2")
-        .each((i, el) => {
-          if ($(el).prop("tagName") === "P") {
-            const numChildren = $(el).children().length;
-
-            let hasStrong = false;
-
-            const checkChildren = (children: any) => {
-              children.each((i: any, el: any) => {
-                if ($(el).prop("tagName") === "STRONG" || $(el).prop("tagName") === "B") {
-                  hasStrong = true;
-                } else {
-                  if ($(el).children().length > 0) {
-                    checkChildren($(el).children());
-                  }
-                }
-              });
-            };
-
-            checkChildren($(el).children());
-
-            if (hasStrong && !$(el).text().startsWith("Naval:") && !$(el).text().startsWith("Nivi:")) {
-              subsectionTitle = $(el).children().first().text();
-
-              subsections.push({
-                title: sectionTitle,
-                subtitle: subsectionTitle,
-                html: "",
-                content: "",
-                length: 0,
-                tokens: 0
-              });
-
-              subsectionIndex++;
-
-              subsectionHtml = "";
-              subsectionText = "";
-            } else {
-              if (subsectionIndex > -1) {
-                subsectionHtml += `<p>${$(el).html()?.replace(/’/g, "'")}</p>`;
-                subsectionText += $(el).text().replace(/’/g, "'");
-
-                subsections[subsectionIndex].html = subsectionHtml;
-                subsections[subsectionIndex].content = subsectionText;
-                subsections[subsectionIndex].length = subsectionText.length;
-                subsections[subsectionIndex].tokens = encode(subsectionText).length;
-              }
-            }
-          }
-        });
-
-      sections.push({
-        title: sectionTitle,
-        length: subsections.reduce((acc, subsection) => acc + subsection.length, 0),
-        tokens: subsections.reduce((acc, subsection) => acc + subsection.tokens, 0),
-        subsections
+      $(subEl).nextUntil("h3").each((_, contentEl) => {
+        subsectionContentHtml += $.html(contentEl);
+        subsectionContentText += $(contentEl).text();
       });
-    }
+
+      subsections.push({
+        subtitle: subtitle,
+        contentHtml: subsectionContentHtml,
+        contentText: subsectionContentText,
+      });
+    });
+
+    sections.push({
+      title: title,
+      publishedDate: publishedDate || "",
+      updatedDate: updatedDate || "",
+      contentHtml: contentHtml || "",
+      contentText: contentText,
+      subsections: subsections,
+    });
   });
 
   return sections;
@@ -92,18 +55,11 @@ const scrapePost = async () => {
   const sections = await scrapePost();
 
   const json: NavalJSON = {
-    current_date: "2023-03-06",
-    author: "Naval Ravikant",
-    url: "https://nav.al/rich",
-    length: sections.reduce((acc, essay) => acc + essay.length, 0),
-    tokens: sections.reduce((acc, essay) => acc + essay.tokens, 0),
-    sections
+    url: "https://stratechery.com",
+    sections: sections,
   };
 
-  const sectionCount = json.sections.length;
-  const subsectionCount = json.sections.reduce((acc, section) => acc + section.subsections.length, 0);
+  console.log(`Sections: ${sections.length}`);
 
-  console.log(`Sections: ${sectionCount}, Subsections: ${subsectionCount}`);
-
-  fs.writeFileSync("scripts/naval.json", JSON.stringify(json));
+  fs.writeFileSync("scripts/naval.json", JSON.stringify(json, null, 2)); // The null, 2 arguments format the JSON for readability
 })();

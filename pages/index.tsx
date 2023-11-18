@@ -212,10 +212,10 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Naval GPT</title>
+        <title>Thompson GPT</title>
         <meta
           name="description"
-          content={`AI-powered search & chat for Naval Ravikant's Twitter thread "How To Get Rich."`}
+          content={`AI-powered search & chat for Ben Thompson's blog, "Stratechery."`}
         />
         <meta
           name="viewport"
@@ -307,7 +307,7 @@ export default function Home() {
                   ref={inputRef}
                   className="h-12 w-full rounded-full border border-zinc-600 pr-12 pl-11 focus:border-zinc-800 focus:outline-none focus:ring-1 focus:ring-zinc-800 sm:h-16 sm:py-2 sm:pr-16 sm:pl-16 sm:text-lg"
                   type="text"
-                  placeholder="What is wealth?"
+                  placeholder="What is aggregation theory?"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   onKeyDown={handleKeyDown}
@@ -426,7 +426,7 @@ export default function Home() {
                 ))}
               </div>
             ) : (
-              <div className="mt-6 text-center text-lg">{`AI-powered search & chat for Naval Ravikant's Twitter thread "How To Get Rich."`}</div>
+              <div className="mt-6 text-center text-lg">{`AI-powered search & chat for Ben Thompson's blog, "Stratechery".`}</div>
             )}
           </div>
         </div>

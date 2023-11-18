@@ -10,7 +10,7 @@ const generateEmbeddings = async (clips: NavalClip[]) => {
   const configuration = new Configuration({ apiKey: process.env.OPENAI_API_KEY });
   const openai = new OpenAIApi(configuration);
 
-  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+  const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
 
   for (let i = 0; i < clips.length; i++) {
     const clip = clips[i];

@@ -2,7 +2,7 @@ import { OpenAIModel } from "@/types";
 import { createClient } from "@supabase/supabase-js";
 import { createParser, ParsedEvent, ReconnectInterval } from "eventsource-parser";
 
-export const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+export const supabaseAdmin = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
 
 export const OpenAIStream = async (prompt: string, apiKey: string) => {
   const encoder = new TextEncoder();
@@ -19,7 +19,7 @@ export const OpenAIStream = async (prompt: string, apiKey: string) => {
       messages: [
         {
           role: "system",
-          content: `You are a helpful assistant that accurately answers queries using Naval Ravikant's Twitter thread "How To Get Rich". Keep your answer under 5 sentences. Be accurate, helpful, concise, and clear. Answer like Naval.`
+          content: `You are a helpful assistant that accurately answers queries using Ben Thompson's blog, "Stratechery". Keep your answer under 5 sentences. Be accurate, helpful, concise, and clear. Answer like Ben.`
         },
         {
           role: "user",
