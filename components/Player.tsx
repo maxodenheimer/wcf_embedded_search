@@ -1,49 +1,51 @@
 import { IconPlayerPauseFilled, IconPlayerPlayFilled, IconPlayerSkipBackFilled, IconPlayerSkipForwardFilled } from "@tabler/icons-react";
 import { ChangeEvent, FC, useEffect, useRef, useState } from "react";
 
-interface PlayerProps {
+interface VideoPlayerProps {
   src: string;
   startTime: number;
+  width?: string; // Optional video width
+  height?: string; // Optional video height
 }
 
-export const Player: FC<PlayerProps> = ({ src, startTime }) => {
-  const audioRef = useRef<HTMLAudioElement>(null);
+export const Player: FC<VideoPlayerProps> = ({ src, startTime, width = '640px', height = '360px' }) => {
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(startTime - 5);
+  const [currentTime, setCurrentTime] = useState(startTime);
   const [duration, setDuration] = useState(0);
 
   const handlePlay = () => {
-    if (!audioRef.current) return;
+    if (!videoRef.current) return;
     setIsPlaying(true);
-    audioRef.current.play();
+    videoRef.current.play();
   };
 
   const handlePause = () => {
-    if (!audioRef.current) return;
+    if (!videoRef.current) return;
     setIsPlaying(false);
-    audioRef.current.pause();
+    videoRef.current.pause();
   };
 
   const handleTimeUpdate = () => {
-    if (!audioRef.current) return;
-    setCurrentTime(audioRef.current.currentTime);
-    setDuration(audioRef.current.duration);
+    if (!videoRef.current) return;
+    setCurrentTime(videoRef.current.currentTime);
+    setDuration(videoRef.current.duration);
   };
 
   const handleSliderChange = (event: ChangeEvent<HTMLInputElement>) => {
-    if (!audioRef.current) return;
-    audioRef.current.currentTime = +event.target.value;
+    if (!videoRef.current) return;
+    videoRef.current.currentTime = +event.target.value;
   };
 
   const handleSkipBackward = () => {
-    if (!audioRef.current) return;
-    audioRef.current.currentTime -= 15;
+    if (!videoRef.current) return;
+    videoRef.current.currentTime -= 15;
   };
 
   const handleSkipForward = () => {
-    if (!audioRef.current) return;
-    audioRef.current.currentTime += 15;
+    if (!videoRef.current) return;
+    videoRef.current.currentTime += 15;
   };
 
   const formatTime = (time: number) => {
@@ -55,19 +57,23 @@ export const Player: FC<PlayerProps> = ({ src, startTime }) => {
   };
 
   useEffect(() => {
-    if (!audioRef.current) return;
-    audioRef.current.currentTime = currentTime;
-    setDuration(audioRef.current.duration);
+    if (!videoRef.current) return;
+    console.log(currentTime);
+    videoRef.current.currentTime = currentTime;
+    setDuration(videoRef.current.duration);
   }, []);
 
   return (
     <div className="p-4">
-      <audio
-        ref={audioRef}
+      <video
+        ref={videoRef}
         src={src}
+        width={width}
+        height={height}
         onPlay={handlePlay}
         onPause={handlePause}
         onTimeUpdate={handleTimeUpdate}
+        controls // You can remove this if you want custom controls only
       />
 
       <div className="flex flex-col items-center">

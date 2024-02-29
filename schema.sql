@@ -2,95 +2,46 @@
 create extension vector;
 
 -- RUN 2nd
-create table naval_posts (
-  id bigserial primary key,
-  title text,
-  subtitle text,
-  html text,
-  content text,
-  length bigint,
-  tokens bigint,
-  embedding vector (1536)
-);
-
-create table naval_clips (
-  id bigserial primary key,
-  file text,
-  content text,
-  seconds bigint,
+CREATE TABLE worldcup_possessions (
+  id BIGSERIAL PRIMARY KEY,
+  timestamp_start_of_possession_seconds NUMERIC,
+  possession_details TEXT,
+  description TEXT,
   embedding vector (1536)
 );
 
 -- RUN 3rd after running the scripts
-create or replace function naval_posts_search (
-  query_embedding vector(1536),
-  similarity_threshold float,
-  match_count int
+CREATE OR REPLACE FUNCTION worldcup_possessions_search (
+  query_embedding VECTOR(1536),
+  similarity_threshold FLOAT,
+  match_count INT
 )
-returns table (
-  id bigint,
-  title text,
-  subtitle text,
-  html text,
-  content text,
-  length bigint,
-  tokens bigint,
-  similarity float
+RETURNS TABLE (
+  id BIGINT,
+  timestamp_start_of_possession_seconds NUMERIC,
+  possession_details TEXT,
+  description TEXT,
+  similarity FLOAT
 )
-language plpgsql
-as $$
-begin
-  return query
-  select
-    naval_posts.id,
-    naval_posts.title,
-    naval_posts.subtitle,
-    naval_posts.html,
-    naval_posts.content,
-    naval_posts.length,
-    naval_posts.tokens,
-    1 - (naval_posts.embedding <=> query_embedding) as similarity
-  from naval_posts
-  where 1 - (naval_posts.embedding <=> query_embedding) > similarity_threshold
-  order by naval_posts.embedding <=> query_embedding
-  limit match_count;
-end;
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  RETURN QUERY
+  SELECT
+    worldcup_possessions.id,
+    worldcup_possessions.timestamp_start_of_possession_seconds,
+    worldcup_possessions.possession_details,
+    worldcup_possessions.description,
+    1 - (worldcup_possessions.embedding <=> query_embedding) AS similarity
+  FROM worldcup_possessions
+  WHERE 1 - (worldcup_possessions.embedding <=> query_embedding) > similarity_threshold
+  ORDER BY worldcup_possessions.embedding <=> query_embedding
+  LIMIT match_count;
+END;
 $$;
 
-create or replace function naval_clips_search (
-  query_embedding vector(1536),
-  similarity_threshold float,
-  match_count int
-)
-returns table (
-  id bigint,
-  file text,
-  content text,
-  seconds bigint,
-  similarity float
-)
-language plpgsql
-as $$
-begin
-  return query
-  select
-    naval_clips.id,
-    naval_clips.file,
-    naval_clips.content,
-    naval_clips.seconds,
-    1 - (naval_clips.embedding <=> query_embedding) as similarity
-  from naval_clips
-  where 1 - (naval_clips.embedding <=> query_embedding) > similarity_threshold
-  order by naval_clips.embedding <=> query_embedding
-  limit match_count;
-end;
-$$;
 
 -- RUN 4th
-create index on naval_posts
-using ivfflat (embedding vector_cosine_ops)
-with (lists = 100);
-
-create index on naval_clips
+create index on worldcup_possessions
 using ivfflat (embedding vector_cosine_ops)
 with (lists = 100);
