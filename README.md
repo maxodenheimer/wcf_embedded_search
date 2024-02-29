@@ -1,6 +1,6 @@
 # Carlo GPT
 
-AI-powered search for a soccer match."
+AI-powered search for a soccer match.
 
 
 Everything is 100% open source.
